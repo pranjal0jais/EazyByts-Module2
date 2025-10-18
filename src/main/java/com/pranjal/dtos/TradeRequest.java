@@ -1,7 +1,7 @@
 package com.pranjal.dtos;
 
 public record TradeRequest(
-    String stockSymbol,
+    String symbol,
     int quantity
 ) {
 }

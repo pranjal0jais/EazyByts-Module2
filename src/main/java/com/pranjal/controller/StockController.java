@@ -1,8 +1,8 @@
 package com.pranjal.controller;
 
 import com.pranjal.dtos.DailyStockHistory;
-import com.pranjal.dtos.StockOverviewDTO;
-import com.pranjal.dtos.StockQuoteDTO;
+import com.pranjal.dtos.StockOverviewResponse;
+import com.pranjal.dtos.StockQuoteResponse;
 import com.pranjal.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +20,12 @@ public class StockController {
     private final StockService stockService;
 
     @GetMapping("/quote")
-    public ResponseEntity<StockQuoteDTO> getQuoteBySymbol(@RequestParam("symbol") String symbol){
+    public ResponseEntity<StockQuoteResponse> getQuoteBySymbol(@RequestParam("symbol") String symbol){
         return ResponseEntity.ok(stockService.getStockPrice(symbol));
     }
 
     @GetMapping("/overview")
-    public ResponseEntity<StockOverviewDTO> getOverviewBySymbol(@RequestParam("symbol") String symbol){
+    public ResponseEntity<StockOverviewResponse> getOverviewBySymbol(@RequestParam("symbol") String symbol){
         return ResponseEntity.ok(stockService.getStockOverview(symbol));
     }
 

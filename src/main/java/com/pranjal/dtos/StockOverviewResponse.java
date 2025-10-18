@@ -1,6 +1,6 @@
 package com.pranjal.dtos;
 
-public record StockOverviewDTO(
+public record StockOverviewResponse(
         String symbol,
         String name,
         String description,

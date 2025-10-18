@@ -28,9 +28,9 @@ public class TradingService {
 
     @Transactional
     public StockPurchaseResponse buyStock(String userId, TradeRequest request){
-        StockQuoteDTO quote;
+        StockQuoteResponse quote;
         try {
-            quote = stockService.getStockPrice(request.stockSymbol());
+            quote = stockService.getStockPrice(request.symbol());
             log.info("Quote: {}", quote);
         } catch (Exception e) {
             log.error("Error while fetching stock price", e);
@@ -57,7 +57,7 @@ public class TradingService {
 
         Transaction transaction = Transaction.builder()
                 .transactionId(UUID.randomUUID().toString())
-                .stockSymbol(request.stockSymbol())
+                .stockSymbol(request.symbol())
                 .type(TransactionType.BUY)
                 .pricePerUnit(quote.price())
                 .quantity(request.quantity())
@@ -69,16 +69,16 @@ public class TradingService {
         log.info("Transaction saved: {}", transaction);
 
         Holding holding;
-        if(!holdingRepository.existsByUser_UserIdAndStockSymbol(userId, request.stockSymbol())){
+        if(!holdingRepository.existsByUser_UserIdAndStockSymbol(userId, request.symbol())){
                holding = Holding.builder()
                        .user(user)
                        .holdingId(UUID.randomUUID().toString())
-                       .stockSymbol(request.stockSymbol())
+                       .stockSymbol(request.symbol())
                        .quantity(request.quantity())
                        .averagePrice(quote.price())
                        .build();
         } else {
-            holding = holdingRepository.findByUser_UserIdAndStockSymbol(userId, request.stockSymbol())
+            holding = holdingRepository.findByUser_UserIdAndStockSymbol(userId, request.symbol())
                     .orElseThrow(() -> new RuntimeException("Error while fetching holding"));
 
             double oldPrice = holding.getAveragePrice() * holding.getQuantity();
@@ -96,7 +96,7 @@ public class TradingService {
         return StockPurchaseResponse.builder()
                 .transactionId(transaction.getTransactionId())
                 .type(TransactionType.BUY)
-                .stockSymbol(request.stockSymbol())
+                .stockSymbol(request.symbol())
                 .pricePerUnit(transaction.getPricePerUnit())
                 .totalAmount(transaction.getTotalAmount())
                 .quantity(transaction.getQuantity())
@@ -106,9 +106,9 @@ public class TradingService {
 
     @Transactional
     public StockSellResponse sellStock(String userId, TradeRequest request){
-        StockQuoteDTO quote;
+        StockQuoteResponse quote;
         try{
-            quote = stockService.getStockPrice(request.stockSymbol());
+            quote = stockService.getStockPrice(request.symbol());
             log.info("Quote: {}", quote);
         } catch(Exception e){
             log.error("Error while fetching stock price", e);
@@ -118,7 +118,7 @@ public class TradingService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Holding holding = holdingRepository.findByUser_UserIdAndStockSymbol(userId, request.stockSymbol())
+        Holding holding = holdingRepository.findByUser_UserIdAndStockSymbol(userId, request.symbol())
                 .orElseThrow(() -> new RuntimeException("Error while fetching holding"));
 
         if(holding.getQuantity() < request.quantity()){
@@ -143,7 +143,7 @@ public class TradingService {
 
         Transaction transaction = Transaction.builder()
                 .transactionId(UUID.randomUUID().toString())
-                .stockSymbol(request.stockSymbol())
+                .stockSymbol(request.symbol())
                 .type(TransactionType.SELL)
                 .pricePerUnit(quote.price())
                 .quantity(request.quantity())

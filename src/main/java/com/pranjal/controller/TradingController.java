@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/trading")
+@RequestMapping("/api/v1/trade")
 @RequiredArgsConstructor
 public class TradingController {
 

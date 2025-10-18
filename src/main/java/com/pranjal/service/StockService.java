@@ -33,9 +33,9 @@ public class StockService {
                 }).toList();
     }
 
-    public StockOverviewDTO getStockOverview(String symbol){
+    public StockOverviewResponse getStockOverview(String symbol){
         AlphaVantageStockOverviewResponse response = stockClient.getStockOverview(symbol);
-        return new StockOverviewDTO(
+        return new StockOverviewResponse(
                 response.symbol(),
                 response.name(),
                 response.description(),
@@ -46,9 +46,9 @@ public class StockService {
         );
     }
 
-    public StockQuoteDTO getStockPrice(String symbol){
+    public StockQuoteResponse getStockPrice(String symbol){
         AlphaVantageResponse clientResponse = stockClient.getStockPrice(symbol);
-        return StockQuoteDTO.builder()
+        return StockQuoteResponse.builder()
                 .symbol(clientResponse.globalQuote().symbol())
                 .price(Double.parseDouble(clientResponse.globalQuote().price()))
                 .build();
