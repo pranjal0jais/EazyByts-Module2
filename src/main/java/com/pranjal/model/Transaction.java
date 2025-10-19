@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="transactions")
@@ -47,6 +48,6 @@ public class Transaction {
 
     @CreationTimestamp
     @Column(name="created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
 }

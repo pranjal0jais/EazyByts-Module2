@@ -22,7 +22,7 @@ public class PortfolioService {
 
     @Transactional(readOnly = true)
     public PortfolioResponse getPortfolioByUser(String userId){
-        if(!userRepository.existsByEmail(userId)){
+        if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException("User not found with user id: " + userId);
         }
 

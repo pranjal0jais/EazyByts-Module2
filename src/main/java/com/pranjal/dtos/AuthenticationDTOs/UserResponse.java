@@ -4,6 +4,7 @@ public record UserResponse(
         String userId,
         String email,
         String name,
-        Double virtualBalance
+        Double virtualBalance,
+        String createdAt
 ) {
 }

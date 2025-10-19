@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,9 +42,8 @@ public class User implements UserDetails {
     @Column(name="virtual_balance")
     private Double virtualBalance = 100000.0;
 
-    @CreationTimestamp
     @Column(name="created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user",
             fetch = FetchType.LAZY,

@@ -36,7 +36,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth->auth
-                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers(
+                        "/api/v1/auth/**",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
         );
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
