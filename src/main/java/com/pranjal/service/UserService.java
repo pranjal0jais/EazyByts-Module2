@@ -2,6 +2,7 @@ package com.pranjal.service;
 
 import com.pranjal.dtos.AuthenticationDTOs.UserRequest;
 import com.pranjal.dtos.AuthenticationDTOs.UserResponse;
+import com.pranjal.exception.UserAlreadyExistException;
 import com.pranjal.model.User;
 import com.pranjal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,10 @@ public class UserService {
 
     @Transactional
     public UserResponse save(UserRequest request) {
+        if(userRepository.existsByEmail(request.email())){
+            throw new UserAlreadyExistException("User with email: " + request.email() + " already" +
+                    " exist.");
+        }
         User user = userRepository.save(
                 User.builder()
                         .userId(UUID.randomUUID().toString())

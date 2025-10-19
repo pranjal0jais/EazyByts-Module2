@@ -7,6 +7,7 @@ import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockOverviewResponse;
 import com.pranjal.dtos.StocksDTOs.DailyStockHistory;
 import com.pranjal.dtos.StocksDTOs.StockOverviewResponse;
 import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
+import com.pranjal.exception.StockSymbolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,45 +22,57 @@ public class StockService {
     @Transactional(readOnly = true)
     public List<DailyStockHistory> getDailyStockHistory(String symbol,
                                                         int days) {
-        AlphaVantageStockHistoryResponse response = stockClient.getStockHistory(symbol);
-        return response.timeSeries()
-                .entrySet()
-                .stream()
-                .limit(days)
-                .map(entry->{
-                    var date = entry.getKey();
-                    var daily = entry.getValue();
-                    return new DailyStockHistory(
-                            date,
-                            Double.parseDouble(daily.open()),
-                            Double.parseDouble(daily.high()),
-                            Double.parseDouble(daily.low()),
-                            Double.parseDouble(daily.close()),
-                            Long.parseLong(daily.volume())
-                    );
-                }).toList();
+        try {
+            AlphaVantageStockHistoryResponse response = stockClient.getStockHistory(symbol);
+            return response.timeSeries()
+                    .entrySet()
+                    .stream()
+                    .limit(days)
+                    .map(entry -> {
+                        var date = entry.getKey();
+                        var daily = entry.getValue();
+                        return new DailyStockHistory(
+                                date,
+                                Double.parseDouble(daily.open()),
+                                Double.parseDouble(daily.high()),
+                                Double.parseDouble(daily.low()),
+                                Double.parseDouble(daily.close()),
+                                Long.parseLong(daily.volume())
+                        );
+                    }).toList();
+        } catch (Exception e){
+            throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
+        }
     }
 
     @Transactional(readOnly = true)
     public StockOverviewResponse getStockOverview(String symbol){
-        AlphaVantageStockOverviewResponse response = stockClient.getStockOverview(symbol);
-        return new StockOverviewResponse(
-                response.symbol(),
-                response.name(),
-                response.description(),
-                response.exchange(),
-                response.country(),
-                response.officialSite(),
-                response.sector()
-        );
+        try {
+            AlphaVantageStockOverviewResponse response = stockClient.getStockOverview(symbol);
+            return new StockOverviewResponse(
+                    response.symbol(),
+                    response.name(),
+                    response.description(),
+                    response.exchange(),
+                    response.country(),
+                    response.officialSite(),
+                    response.sector()
+            );
+        } catch (Exception e){
+            throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
+        }
     }
 
     @Transactional(readOnly = true)
     public StockQuoteResponse getStockPrice(String symbol){
-        AlphaVantageResponse clientResponse = stockClient.getStockPrice(symbol);
-        return StockQuoteResponse.builder()
-                .symbol(clientResponse.globalQuote().symbol())
-                .price(Double.parseDouble(clientResponse.globalQuote().price()))
-                .build();
+        try {
+            AlphaVantageResponse clientResponse = stockClient.getStockPrice(symbol);
+            return StockQuoteResponse.builder()
+                    .symbol(clientResponse.globalQuote().symbol())
+                    .price(Double.parseDouble(clientResponse.globalQuote().price()))
+                    .build();
+        }catch (Exception e){
+            throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
+        }
     }
 }
