@@ -1,4 +1,4 @@
-package com.pranjal.dtos;
+package com.pranjal.dtos.StocksDTOs;
 
 import lombok.Builder;
 

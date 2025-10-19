@@ -1,17 +1,16 @@
-package com.pranjal.dtos;
+package com.pranjal.dtos.TradingDTOs;
 
+import com.pranjal.dtos.TransactionType;
 import lombok.Builder;
 
 @Builder
-public record StockSellResponse(
+public record StockPurchaseResponse(
         String transactionId,
         TransactionType type,
         String stockSymbol,
         Double pricePerUnit,
         int quantity,
         Double totalAmount,
-        String createdAt,
-        boolean profit,
-        double profitOrLoss
+        String createdAt
 ) {
 }

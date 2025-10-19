@@ -1,11 +1,13 @@
 package com.pranjal.controller;
 
-import com.pranjal.dtos.DailyStockHistory;
-import com.pranjal.dtos.StockOverviewResponse;
-import com.pranjal.dtos.StockQuoteResponse;
+import com.pranjal.dtos.StocksDTOs.DailyStockHistory;
+import com.pranjal.dtos.StocksDTOs.StockOverviewResponse;
+import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
 import com.pranjal.service.StockService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

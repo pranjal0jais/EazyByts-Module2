@@ -1,8 +1,8 @@
 package com.pranjal.client;
 
-import com.pranjal.dtos.AlphaVantageResponse;
-import com.pranjal.dtos.AlphaVantageStockHistory;
-import com.pranjal.dtos.AlphaVantageStockOverviewResponse;
+import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageResponse;
+import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockHistoryResponse;
+import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockOverviewResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,14 +42,14 @@ public class StockClient {
                 .block();
     }
 
-    public AlphaVantageStockHistory getStockHistory(String symbol) {
+    public AlphaVantageStockHistoryResponse getStockHistory(String symbol) {
         return webClient.get().uri(uriBuilder -> uriBuilder
                         .queryParam("function", "TIME_SERIES_DAILY")
                         .queryParam("symbol", symbol)
                         .queryParam("apikey", API_KEY)
                         .build())
                 .retrieve()
-                .bodyToMono(AlphaVantageStockHistory.class)
+                .bodyToMono(AlphaVantageStockHistoryResponse.class)
                 .block();
     }
 }

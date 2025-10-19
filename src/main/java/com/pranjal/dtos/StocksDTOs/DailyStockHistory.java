@@ -1,6 +1,4 @@
-package com.pranjal.dtos;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.pranjal.dtos.StocksDTOs;
 
 public record DailyStockHistory(
         String date,

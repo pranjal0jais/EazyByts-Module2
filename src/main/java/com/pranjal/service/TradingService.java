@@ -2,6 +2,10 @@ package com.pranjal.service;
 
 import com.pranjal.client.StockClient;
 import com.pranjal.dtos.*;
+import com.pranjal.dtos.TradingDTOs.StockPurchaseResponse;
+import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
+import com.pranjal.dtos.TradingDTOs.StockSellResponse;
+import com.pranjal.dtos.TradingDTOs.TradeRequest;
 import com.pranjal.model.Holding;
 import com.pranjal.model.Transaction;
 import com.pranjal.model.User;

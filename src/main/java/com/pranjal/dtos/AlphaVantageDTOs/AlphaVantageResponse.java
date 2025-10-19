@@ -1,7 +1,6 @@
-package com.pranjal.dtos;
+package com.pranjal.dtos.AlphaVantageDTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
 
 public record AlphaVantageResponse(
         @JsonProperty("Global Quote") GlobalQuote globalQuote

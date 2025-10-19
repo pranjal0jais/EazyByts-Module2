@@ -1,4 +1,4 @@
-package com.pranjal.dtos;
+package com.pranjal.dtos.StocksDTOs;
 
 public record StockOverviewResponse(
         String symbol,

@@ -1,4 +1,4 @@
-package com.pranjal.dtos;
+package com.pranjal.dtos.AlphaVantageDTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

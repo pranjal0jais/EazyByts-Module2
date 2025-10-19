@@ -1,11 +1,12 @@
 package com.pranjal.service;
 
 import com.pranjal.dtos.PortfolioResponse;
-import com.pranjal.dtos.StockQuoteResponse;
+import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
 import com.pranjal.model.Holding;
 import com.pranjal.repository.HoldingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class PortfolioService {
     private final HoldingRepository holdingRepository;
     private final StockService stockService;
 
+    @Transactional(readOnly = true)
     public PortfolioResponse getPortfolioByUser(String userId){
         List<Holding> holding = holdingRepository.findAllByUser_UserIdOrderByStockSymbolAsc(userId);
 
