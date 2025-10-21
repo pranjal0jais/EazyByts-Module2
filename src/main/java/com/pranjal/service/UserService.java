@@ -57,6 +57,7 @@ public class UserService {
         return user.getUserId();
     }
 
+    @Transactional(readOnly = true)
     public String getAllSymbol(String userId){
         List<Holding> holdings = holdingRepository.findAllByUser_UserIdOrderByStockSymbolAsc(userId);
         if(holdings.isEmpty()){

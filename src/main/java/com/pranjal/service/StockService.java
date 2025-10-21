@@ -82,6 +82,7 @@ public class StockService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<StockNewsResponse> getNewsByTickers(String userId,int size){
         String tickers = "";
         try{
