@@ -1,13 +1,15 @@
 package com.pranjal.controller;
 
 import com.pranjal.dtos.StocksDTOs.DailyStockHistory;
+import com.pranjal.dtos.StocksDTOs.StockNewsResponse;
 import com.pranjal.dtos.StocksDTOs.StockOverviewResponse;
 import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
 import com.pranjal.service.StockService;
-import jakarta.validation.Valid;
+import com.pranjal.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StockController {
     private final StockService stockService;
+    private final UserService userService;
 
     @GetMapping("/quote")
     public ResponseEntity<StockQuoteResponse> getQuoteBySymbol(@RequestParam("symbol") String symbol){
@@ -35,6 +38,14 @@ public class StockController {
     public ResponseEntity<List<DailyStockHistory>> getHistoryBySymbol(
             @RequestParam("symbol") String symbol,
             @RequestParam(value = "days", defaultValue = "30") int days){
-        return ResponseEntity.ok(stockService.getDailyStockHistory(symbol, 30));
+        return ResponseEntity.ok(stockService.getDailyStockHistory(symbol, days));
+    }
+
+    @GetMapping("/news")
+    public ResponseEntity<List<StockNewsResponse>> getNewsBySymbols(@AuthenticationPrincipal Jwt jwt,
+                                                                    @RequestParam(value = "size",
+                                                                            defaultValue = "10") int size){
+        String email = jwt.getSubject();
+        return ResponseEntity.ok(stockService.getNewsByTickers(userService.getUserIdByEmail(email), size));
     }
 }

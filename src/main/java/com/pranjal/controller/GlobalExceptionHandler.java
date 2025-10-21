@@ -105,4 +105,13 @@ public class GlobalExceptionHandler {
                 "NOT_FOUND"
         ), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception exception) {
+        return new ResponseEntity<>(new ErrorResponse(
+                "An unexpected error occurred: " + exception.getMessage(),
+                LocalDateTime.now(),
+                "INTERNAL_SERVER_ERROR"
+        ), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

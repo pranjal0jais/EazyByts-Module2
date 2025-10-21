@@ -1,6 +1,5 @@
 package com.pranjal.service;
 
-import com.pranjal.model.User;
 import com.pranjal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

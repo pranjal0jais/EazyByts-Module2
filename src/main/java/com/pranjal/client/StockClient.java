@@ -1,5 +1,6 @@
 package com.pranjal.client;
 
+import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageNewsResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockHistoryResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockOverviewResponse;
@@ -62,6 +63,34 @@ public class StockClient {
                     .block();
         }catch (ExternalApiException e){
             throw new ExternalApiException("Error while fetching stock history.");
+        }
+    }
+
+    public AlphaVantageNewsResponse getNewsBySymbol(String symbols, int size){
+        try {
+            if(symbols.isBlank()){
+                return webClient.get().uri(uriBuilder -> uriBuilder
+                                .queryParam("function", "NEWS_SENTIMENT")
+                                .queryParam("sort", "LATEST")
+                                .queryParam("limit", size)
+                                .queryParam("apikey", API_KEY)
+                                .build())
+                        .retrieve()
+                        .bodyToMono(AlphaVantageNewsResponse.class)
+                        .block();
+            }
+            return webClient.get().uri(uriBuilder -> uriBuilder
+                            .queryParam("function", "NEWS_SENTIMENT")
+                            .queryParam("tickers", symbols)
+                            .queryParam("sort", "LATEST")
+                            .queryParam("limit", size)
+                            .queryParam("apikey", API_KEY)
+                            .build())
+                    .retrieve()
+                    .bodyToMono(AlphaVantageNewsResponse.class)
+                    .block();
+        }catch (ExternalApiException e){
+            throw new ExternalApiException("Error while fetching news.");
         }
     }
 }

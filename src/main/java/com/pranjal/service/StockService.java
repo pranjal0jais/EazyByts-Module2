@@ -1,30 +1,35 @@
 package com.pranjal.service;
 
 import com.pranjal.client.StockClient;
+import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageNewsResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockHistoryResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockOverviewResponse;
 import com.pranjal.dtos.StocksDTOs.DailyStockHistory;
+import com.pranjal.dtos.StocksDTOs.StockNewsResponse;
 import com.pranjal.dtos.StocksDTOs.StockOverviewResponse;
 import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
 import com.pranjal.exception.StockSymbolNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StockService {
     private final StockClient stockClient;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
     public List<DailyStockHistory> getDailyStockHistory(String symbol,
                                                         int days) {
         try {
             AlphaVantageStockHistoryResponse response = stockClient.getStockHistory(symbol);
-            return response.timeSeries()
+            List<DailyStockHistory> dailyStockHistories = response.timeSeries()
                     .entrySet()
                     .stream()
                     .limit(days)
@@ -40,6 +45,7 @@ public class StockService {
                                 Long.parseLong(daily.volume())
                         );
                     }).toList();
+            return dailyStockHistories.reversed();
         } catch (Exception e){
             throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
         }
@@ -73,6 +79,32 @@ public class StockService {
                     .build();
         }catch (Exception e){
             throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
+        }
+    }
+
+    public List<StockNewsResponse> getNewsByTickers(String userId,int size){
+        String tickers = "";
+        try{
+            tickers = userService.getAllSymbol(userId);
+            AlphaVantageNewsResponse response = stockClient.getNewsBySymbol(tickers, size);
+            return response.feed().stream()
+                    .map(feed -> new StockNewsResponse(
+                            feed.title(),
+                            feed.url(),
+                            feed.publishedAt(),
+                            feed.summary(),
+                            feed.image(),
+                            feed.source(),
+                            feed.sentiment(),
+                            feed.tickerSentiment().stream()
+                                    .map(tickerSentiment -> new StockNewsResponse.TickerSentiment(
+                                            tickerSentiment.ticker(),
+                                            tickerSentiment.sentiment()
+                                    )).toList()
+                    ))
+                    .toList();
+        }catch (Exception e){
+            throw new StockSymbolNotFoundException("Stock symbol not found: " + tickers);
         }
     }
 }

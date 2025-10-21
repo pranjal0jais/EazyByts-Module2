@@ -21,9 +21,14 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
 
 @EnableWebSecurity
 @Configuration
@@ -40,7 +45,18 @@ public class SecurityConfig {
                         "/api/v1/auth/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
-                        "/swagger-ui.html").permitAll()
+                        "/swagger-ui.html",
+                        "/",
+                        "/index.html",
+                        "/register.html",
+                        "/dashboard.html",
+                        "/portfolio.html",
+                        "/trade.html",
+                        "/stock-search.html",
+                        "/css/**",
+                        "/js/**",
+                        "/*.css",
+                        "/*.js").permitAll()
                 .anyRequest().authenticated()
         );
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
@@ -72,6 +88,23 @@ public class SecurityConfig {
                 "HmacSHA256");
         JWKSource<SecurityContext> immutableSecret = new ImmutableSecret<>(secretKey);
         return new NimbusJwtEncoder(immutableSecret);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }

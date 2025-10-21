@@ -5,7 +5,6 @@ import com.pranjal.dtos.AuthenticationDTOs.AuthResponse;
 import com.pranjal.dtos.AuthenticationDTOs.UserRequest;
 import com.pranjal.dtos.AuthenticationDTOs.UserResponse;
 import com.pranjal.model.User;
-import com.pranjal.service.UserDetailServiceImpl;
 import com.pranjal.service.UserService;
 import com.pranjal.util.JwtUtility;
 import jakarta.validation.Valid;
