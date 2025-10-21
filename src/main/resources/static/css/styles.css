@@ -1,0 +1,26 @@
+/* Custom minimal styles */
+body { background: #f8f9fa; }
+.card { border-radius: 10px; }
+.display-6 { font-weight: 600; }
+.form-control-plaintext { font-size: 1.1rem; }
+.small-muted { color: #6c757d; }
+.badge-profit { background: #198754; color: #fff; }
+.badge-loss { background: #dc3545; color: #fff; }
+
+/* News container scroll area */
+#newsContainer {
+  max-height: 480px;
+  overflow-y: auto;
+}
+#newsContainer .card { margin-bottom: 0.75rem; }
+
+/* Quick actions wrap nicely on small screens */
+.quick-actions { flex-wrap: wrap; }
+.quick-actions .btn { flex: 1 1 160px; }
+
+/* Tables are easier to read on phones */
+@media (max-width: 576px) {
+  .table { font-size: 0.9rem; }
+  .display-6 { font-size: 1.75rem; }
+  main.container { padding-top: 1rem; padding-bottom: 1rem; }
+}

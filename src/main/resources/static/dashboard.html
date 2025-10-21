@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard - StockTrader</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="dashboard.html">StockTrader</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="portfolio.html">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="trade.html">Trade</a></li>
+                <li class="nav-item"><a class="nav-link" href="stock-search.html">Stock Search</a></li>
+                <li class="nav-item"><a id="logoutBtn" class="nav-link text-danger" href="#">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container py-4">
+    <div id="alertContainer"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 id="welcomeMessage">Welcome, User</h4>
+            <div class="text-muted" id="balanceDisplay">Balance: $0.00</div>
+        </div>
+        <button class="btn btn-outline-secondary" id="refreshBtn">Refresh</button>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h6 class="text-muted">Portfolio Value</h6>
+                <div class="h4" id="portfolioValue">$0.00</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h6 class="text-muted">Profit / Loss</h6>
+                <div class="h4" id="profitLoss">$0.00</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h6 class="text-muted">Number of Holdings</h6>
+                <div class="h4" id="numHoldings">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <h3 class="mb-4">Latest Market News
+            <p class="text-muted fs-2">According to you Portfolio</p>
+        </h3>
+        <div id="newsContainer">
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Quick actions</h5>
+                <div class="d-flex gap-2 mt-2 quick-actions">
+                    <a href="trade.html" class="btn btn-primary">Trade Stocks</a>
+                    <a href="stock-search.html" class="btn btn-outline-primary">Search Stocks</a>
+                    <a href="portfolio.html" class="btn btn-outline-success">View Portfolio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/news.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        checkAuth();
+        const user = getUserData();
+        document.getElementById('welcomeMessage').textContent = `Welcome, ${user?.name || 'Trader'}`;
+        const balanceEl = document.getElementById('balanceDisplay');
+        balanceEl.textContent = `Balance: ${formatCurrency(user?.balance ?? user?.virtualBalance ?? 0)}`;
+
+        const alertContainer = 'alertContainer';
+        const logoutBtn = document.getElementById('logoutBtn');
+        logoutBtn.addEventListener('click', (e) => { e.preventDefault(); logout(); });
+
+        const load = async () => {
+            showLoading('refreshBtn');
+            try {
+                const res = await getPortfolio();
+                if (res.success) {
+                    const data = res.data;
+                    document.getElementById('portfolioValue').textContent = formatCurrency(data.totalCurrentValue ?? 0);
+                    const pl = data.totalProfitLoss ?? 0;
+                    document.getElementById('profitLoss').innerHTML = `${formatCurrency(pl)} <small class="${pl>=0?'text-success':'text-danger'}">(${formatPercentage(((data.totalCurrentValue - data.totalInvestedValue)/Math.max(1,data.totalInvestedValue))*100)})</small>`;
+                    document.getElementById('numHoldings').textContent = data.totalStocks ?? (data.stockSummary?.length ?? 0);
+                } else {
+                    showError(res.error?.message || 'Could not load portfolio', alertContainer);
+                }
+            } catch (err) {
+                showError('Network error', alertContainer);
+            } finally {
+                hideLoading('refreshBtn');
+            }
+        };
+
+        document.getElementById('refreshBtn').addEventListener('click', load);
+        await load();
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

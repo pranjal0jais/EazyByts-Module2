@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Trade - StockTrader</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="dashboard.html">StockTrader</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="portfolio.html">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link active" href="trade.html">Trade</a></li>
+                <li class="nav-item"><a class="nav-link" href="stock-search.html">Stock Search</a></li>
+                <li class="nav-item"><a id="logoutBtn" class="nav-link text-danger" href="#">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container py-4">
+    <div id="alertContainer"></div>
+
+    <h4>Trade Stocks</h4>
+
+    <ul class="nav nav-tabs mt-3" id="tradeTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buy" type="button">Buy</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="sell-tab" data-bs-toggle="tab" data-bs-target="#sell" type="button">Sell</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+        <!-- BUY -->
+        <div class="tab-pane fade show active" id="buy">
+            <div class="card p-3">
+                <form id="buyForm">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label">Symbol</label>
+                            <div class="input-group">
+                                <input id="buySymbol" class="form-control text-uppercase" maxlength="5" required />
+                                <button id="getQuoteBtn" class="btn btn-outline-secondary" type="button">Get Quote</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Price</label>
+                            <div id="buyPrice" class="form-control-plaintext">—</div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Quantity</label>
+                            <input id="buyQuantity" type="number" class="form-control" min="1" value="1" required />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Total</label>
+                            <div id="buyTotal" class="form-control-plaintext">—</div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div id="balanceDisplay">Balance: —</div>
+                                <div>
+                                    <button id="buyBtn" class="btn btn-success" type="submit">Buy</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SELL -->
+        <div class="tab-pane fade" id="sell">
+            <div class="card p-3">
+                <form id="sellForm">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label">Holding</label>
+                            <select id="sellHoldingSelect" class="form-select">
+                                <option value="">Select holding...</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Price</label>
+                            <div id="sellPrice" class="form-control-plaintext">—</div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Quantity</label>
+                            <input id="sellQuantity" type="number" class="form-control" min="1" value="1" />
+                            <div class="form-text" id="sellMaxText"></div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Potential P/L</label>
+                            <div id="sellPL" class="form-control-plaintext">—</div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end">
+                                <button id="sellBtn" class="btn btn-danger" type="submit">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/trade.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        checkAuth();
+        document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+        await loadUserHoldings();
+        const user = getUserData();
+        document.getElementById('balanceDisplay').textContent = `Balance: ${formatCurrency(user?.balance ?? user?.virtualBalance ?? 0)}`;
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
