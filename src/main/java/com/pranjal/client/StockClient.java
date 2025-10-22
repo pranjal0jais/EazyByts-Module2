@@ -68,7 +68,7 @@ public class StockClient {
 
     public AlphaVantageNewsResponse getNewsBySymbol(String symbols, int size){
         try {
-            if(symbols.isBlank()){
+            if(symbols.equals("none")){
                 return webClient.get().uri(uriBuilder -> uriBuilder
                                 .queryParam("function", "NEWS_SENTIMENT")
                                 .queryParam("sort", "LATEST")
@@ -81,7 +81,7 @@ public class StockClient {
             }
             return webClient.get().uri(uriBuilder -> uriBuilder
                             .queryParam("function", "NEWS_SENTIMENT")
-                            .queryParam("tickers", symbols)
+                            .queryParam("tickers", "AAPL")
                             .queryParam("sort", "LATEST")
                             .queryParam("limit", size)
                             .queryParam("apikey", API_KEY)

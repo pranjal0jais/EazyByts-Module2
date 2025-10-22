@@ -12,6 +12,7 @@ import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
 import com.pranjal.exception.StockSymbolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class StockService {
     private final StockClient stockClient;
     private final UserService userService;
 
+    @Cacheable(value = "stockHistory", key = "#symbol + '-' + #days", unless = "#result == null")
     @Transactional(readOnly = true)
     public List<DailyStockHistory> getDailyStockHistory(String symbol,
                                                         int days) {
@@ -51,6 +53,7 @@ public class StockService {
         }
     }
 
+    @Cacheable(value = "stockOverview", key = "#symbol", unless = "#result == null")
     @Transactional(readOnly = true)
     public StockOverviewResponse getStockOverview(String symbol){
         try {
@@ -69,6 +72,7 @@ public class StockService {
         }
     }
 
+    @Cacheable(value = "stockQuotes", key = "#symbol", unless = "#result == null")
     @Transactional(readOnly = true)
     public StockQuoteResponse getStockPrice(String symbol){
         try {
@@ -82,6 +86,7 @@ public class StockService {
         }
     }
 
+    @Cacheable(value = "stockNews", key = "#userId", unless = "#result == null")
     @Transactional(readOnly = true)
     public List<StockNewsResponse> getNewsByTickers(String userId,int size){
         String tickers = "";

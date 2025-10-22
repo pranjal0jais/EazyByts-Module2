@@ -7,12 +7,16 @@ import com.pranjal.model.Holding;
 import com.pranjal.repository.HoldingRepository;
 import com.pranjal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PortfolioService {
@@ -20,8 +24,10 @@ public class PortfolioService {
     private final StockService stockService;
     private final UserRepository userRepository;
 
+    @Cacheable(value = "portfolio", key = "#userId", unless="#result == null")
     @Transactional(readOnly = true)
     public PortfolioResponse getPortfolioByUser(String userId){
+        log.info("Fetching portfolio for user: {}", userId);
         if(!userRepository.existsByUserId(userId)){
             throw new UserNotFoundException("User not found with user id: " + userId);
         }

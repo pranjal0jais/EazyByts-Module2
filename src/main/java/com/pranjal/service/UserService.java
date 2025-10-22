@@ -36,7 +36,7 @@ public class UserService {
                         .userId(UUID.randomUUID().toString())
                         .email(request.email())
                         .name(request.name())
-                        .virtualBalance(100000.00)
+                        .virtualBalance(1000.00)
                         .password(passwordEncoder.encode(request.password()))
                         .createdAt(LocalDateTime.now())
                         .build()
@@ -61,7 +61,7 @@ public class UserService {
     public String getAllSymbol(String userId){
         List<Holding> holdings = holdingRepository.findAllByUser_UserIdOrderByStockSymbolAsc(userId);
         if(holdings.isEmpty()){
-            return "";
+            return "none";
         }
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < holdings.size() - 1; i++){

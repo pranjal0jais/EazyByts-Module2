@@ -14,6 +14,7 @@ import com.pranjal.repository.TransactionRepository;
 import com.pranjal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class TradingService {
 
 
     @Transactional
+    @CacheEvict(value = "portfolio", key = "#userId")
     public StockPurchaseResponse buyStock(String userId, TradeRequest request){
         try {
             StockQuoteResponse quote;
@@ -46,13 +48,9 @@ public class TradingService {
 
             double totalPrice = quote.price() * request.quantity();
 
-            log.info("Total Price: {}", totalPrice);
-
             if (user.getVirtualBalance() < totalPrice) {
                 throw new InsufficientBalanceException("Insufficient balance for purchase: " + totalPrice);
             }
-
-            log.info("Virtual Balance: {}", user.getVirtualBalance());
 
             user.setVirtualBalance(user.getVirtualBalance() - totalPrice);
             userRepository.save(user);
@@ -69,7 +67,6 @@ public class TradingService {
                     .build();
 
             transaction = transactionRepository.save(transaction);
-            log.info("Transaction saved: {}", transaction);
 
             Holding holding;
             if (!holdingRepository.existsByUser_UserIdAndStockSymbol(userId, request.symbol())) {
@@ -91,11 +88,8 @@ public class TradingService {
 
                 holding.setQuantity(holding.getQuantity() + request.quantity());
                 holding.setAveragePrice(newAveragePrice);
-                log.info("New Average Price: {}", newAveragePrice);
             }
             holdingRepository.save(holding);
-
-            log.info("Holding saved: {}", holding);
 
             return StockPurchaseResponse.builder()
                     .transactionId(transaction.getTransactionId())
@@ -114,6 +108,7 @@ public class TradingService {
         }
     }
 
+    @CacheEvict(value = "portfolio", key = "#userId")
     @Transactional
     public StockSellResponse sellStock(String userId, TradeRequest request){
         try {

@@ -37,7 +37,7 @@ public class User implements UserDetails {
     private String password;
 
     @Column(name="virtual_balance")
-    private Double virtualBalance = 100000.0;
+    private Double virtualBalance;
 
     @Column(name="created_at")
     private LocalDateTime createdAt;
