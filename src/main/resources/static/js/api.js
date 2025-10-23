@@ -54,8 +54,9 @@ async function getStockQuote(symbol) {
 async function getStockOverview(symbol) {
     return await apiCall(`/api/v1/stocks/overview?symbol=${encodeURIComponent(symbol)}`, { method: 'GET' });
 }
-async function getStockHistory(symbol, days = 30) {
-    return await apiCall(`/api/v1/stocks/history?symbol=${encodeURIComponent(symbol)}&days=${days}`, { method: 'GET' });
+// UPDATED to accept and pass the 'function' parameter
+async function getStockHistory(symbol, days = 30, func = 'TIME_SERIES_DAILY') {
+    return await apiCall(`/api/v1/stocks/history?symbol=${encodeURIComponent(symbol)}&days=${days}&function=${encodeURIComponent(func)}`, { method: 'GET' });
 }
 
 // Trades

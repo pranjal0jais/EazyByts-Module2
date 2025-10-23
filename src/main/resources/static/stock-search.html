@@ -8,7 +8,6 @@
     <link href="css/styles.css" rel="stylesheet">
 </head>
 <body>
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-bold" href="dashboard.html">StockTrader</a>
@@ -34,6 +33,12 @@
         <div class="col-md-12">
             <div class="input-group mb-3">
                 <input id="searchSymbol" class="form-control text-uppercase" placeholder="Symbol (e.g. AAPL)" maxlength="5" />
+                <select id="functionSelector" class="form-select" style="max-width: 180px;">
+                    <option value="TIME_SERIES_DAILY" selected>Daily History</option>
+                    <option value="TIME_SERIES_WEEKLY">Weekly History</option>
+                    <option value="TIME_SERIES_MONTHLY">Monthly History</option>
+                    <option value="TIME_SERIES_INTRADAY">Intraday History</option>
+                </select>
                 <button id="searchBtn" class="btn btn-primary">Search</button>
                 <button id="clearBtn" class="btn btn-outline-secondary">Clear</button>
             </div>
@@ -62,7 +67,7 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <h6>Price History (30 Days)</h6>
+                        <h6 id="chartTitle">Price History (30 Days)</h6>
                         <canvas id="priceHistoryChart" height="200"></canvas>
                     </div>
                 </div>
@@ -84,7 +89,15 @@
         checkAuth();
         document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); logout(); });
 
-        document.getElementById('searchBtn').addEventListener('click', () => searchStock(document.getElementById('searchSymbol').value.trim()));
+        const searchSymbolInput = document.getElementById('searchSymbol');
+        const functionSelector = document.getElementById('functionSelector');
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const symbol = searchSymbolInput.value.trim();
+            const functionValue = functionSelector.value;
+            // Pass the function value to the searchStock function
+            searchStock(symbol, functionValue);
+        });
         document.getElementById('clearBtn').addEventListener('click', clearSearch);
     });
 </script>

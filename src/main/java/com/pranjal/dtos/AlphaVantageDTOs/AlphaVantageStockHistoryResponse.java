@@ -1,11 +1,13 @@
 package com.pranjal.dtos.AlphaVantageDTOs;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 public record AlphaVantageStockHistoryResponse(
         @JsonProperty("Meta Data") MetaData metaData,
-        @JsonProperty("Time Series (Daily)")Map<String, DailyStockData> timeSeries
+        @JsonProperty("Time Series (Daily)")
+        @JsonAlias({"Time Series (5min)", "Weekly Time Series", "Monthly Time Series"}) Map<String, DailyStockData> timeSeries
         ) {
     public record MetaData(
             @JsonProperty("2. Symbol") String symbol

@@ -25,12 +25,13 @@ public class StockService {
     private final StockClient stockClient;
     private final UserService userService;
 
-    @Cacheable(value = "stockHistory", key = "#symbol + '-' + #days", unless = "#result == null")
+    @Cacheable(value = "stockHistory", key = "#symbol + '-' + #function", unless = "#result == " +
+            "null")
     @Transactional(readOnly = true)
     public List<DailyStockHistory> getDailyStockHistory(String symbol,
-                                                        int days) {
+                                                        int days, String function) {
         try {
-            AlphaVantageStockHistoryResponse response = stockClient.getStockHistory(symbol);
+            AlphaVantageStockHistoryResponse response = stockClient.getStockHistory(symbol, function);
             List<DailyStockHistory> dailyStockHistories = response.timeSeries()
                     .entrySet()
                     .stream()

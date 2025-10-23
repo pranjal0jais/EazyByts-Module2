@@ -1,7 +1,9 @@
 // js/stock.js
 
 let priceChart;
-async function searchStock(symbol) {
+
+// UPDATED to accept the 'historyFunction' parameter
+async function searchStock(symbol, historyFunction = 'TIME_SERIES_DAILY') {
     const alertContainer = 'alertContainer';
     symbol = (symbol || '').trim().toUpperCase();
     if (!validateStockSymbol(symbol)) {
@@ -12,12 +14,16 @@ async function searchStock(symbol) {
     // UI
     document.getElementById('searchResult').classList.add('d-none');
     document.getElementById('searchLoading').classList.remove('d-none');
+    // Update chart title based on function
+    document.getElementById('chartTitle').textContent = formatChartTitle(historyFunction);
+
 
     try {
         const [qRes, oRes, hRes] = await Promise.all([
             getStockQuote(symbol),
             getStockOverview(symbol),
-            getStockHistory(symbol, 30)
+            // Pass the historyFunction here
+            getStockHistory(symbol, 30, historyFunction)
         ]);
 
         if (!qRes.success) throw new Error(qRes.error?.message || 'Quote not found');
@@ -26,7 +32,7 @@ async function searchStock(symbol) {
 
         displayStockQuote(qRes.data);
         displayStockOverview(oRes.data);
-        displayStockHistory(hRes.data);
+        displayStockHistory(hRes.data); // historyData should be displayed
 
         document.getElementById('searchResult').classList.remove('d-none');
 
@@ -56,13 +62,14 @@ function displayStockOverview(data) {
     ${data.country ? `<strong>Country:</strong> ${data.country} <br>` : ''}
     ${data.description ? `<p class="mt-2">${data.description}</p>` : ''}
     ${data.officialSite ? `<a href="${data.officialSite}" target="_blank">Official site</a>` : ''}
-  `;
+ `;
 }
 
 function displayStockHistory(historyData) {
     const ctx = document.getElementById('priceHistoryChart').getContext('2d');
 
     // Prepare data
+    // Assuming historyData is an array of objects with 'date' and 'close'
     const labels = historyData.map(item => formatDate(item.date)); // e.g., "19 Oct"
     const prices = historyData.map(item => item.close);
 
@@ -99,7 +106,28 @@ function displayStockHistory(historyData) {
 
 function clearSearch() {
     document.getElementById('searchSymbol').value = '';
+    // Reset function selector to default
+    document.getElementById('functionSelector').value = 'TIME_SERIES_DAILY';
     document.getElementById('searchResult').classList.add('d-none');
-    document.getElementById('historyBody').innerHTML = '';
     document.getElementById('companyOverview').innerHTML = '';
+    document.getElementById('chartTitle').textContent = 'Price History (30 Days)'; // Reset chart title
+    if (priceChart) priceChart.destroy(); // Destroy chart on clear
 }
+
+// Helper function to format the chart title
+function formatChartTitle(func) {
+    switch(func) {
+        case 'TIME_SERIES_DAILY':
+            return 'Daily Price History (30 Days)';
+        case 'TIME_SERIES_WEEKLY':
+            return 'Weekly Price History (30 Periods)';
+        case 'TIME_SERIES_MONTHLY':
+            return 'Monthly Price History (30 Periods)';
+        case 'TIME_SERIES_INTRADAY':
+            return 'Intraday Price History (30 Periods)';
+        default:
+            return 'Price History (30 Days)';
+    }
+}
+// Note: validateStockSymbol, formatCurrency, formatDate, showError, and the auth functions (getToken, clearAuthData)
+// are assumed to be in js/utils.js and js/auth.js, respectively.

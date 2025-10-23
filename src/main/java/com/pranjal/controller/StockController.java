@@ -37,8 +37,9 @@ public class StockController {
     @GetMapping("/history")
     public ResponseEntity<List<DailyStockHistory>> getHistoryBySymbol(
             @RequestParam("symbol") String symbol,
-            @RequestParam(value = "days", defaultValue = "30") int days){
-        return ResponseEntity.ok(stockService.getDailyStockHistory(symbol, days));
+            @RequestParam(value = "days", defaultValue = "30") int days,
+            @RequestParam(value = "function") String function){
+        return ResponseEntity.ok(stockService.getDailyStockHistory(symbol, days, function));
     }
 
     @GetMapping("/news")

@@ -5,18 +5,18 @@ import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockHistoryResponse;
 import com.pranjal.dtos.AlphaVantageDTOs.AlphaVantageStockOverviewResponse;
 import com.pranjal.exception.ExternalApiException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class StockClient {
 
-    @Autowired
-    private WebClient webClient;
+    private final WebClient webClient;
 
     @Value("${alpha.vantage.api.key}")
     private String API_KEY;
@@ -51,20 +51,29 @@ public class StockClient {
         }
     }
 
-    public AlphaVantageStockHistoryResponse getStockHistory(String symbol) {
-        try {
-            return webClient.get().uri(uriBuilder -> uriBuilder
-                            .queryParam("function", "TIME_SERIES_DAILY")
+public AlphaVantageStockHistoryResponse getStockHistory(String symbol, String function) {
+    log.info("Fetching stock history for symbol: {} and function: {}", symbol, function);
+
+    try {
+        return webClient.get()
+                .uri(uriBuilder -> {
+                    uriBuilder
                             .queryParam("symbol", symbol)
                             .queryParam("apikey", API_KEY)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(AlphaVantageStockHistoryResponse.class)
-                    .block();
-        }catch (ExternalApiException e){
-            throw new ExternalApiException("Error while fetching stock history.");
-        }
+                            .queryParam("function", function);
+                    if ("TIME_SERIES_INTRADAY".equals(function)) {
+                        uriBuilder.queryParam("interval", "5min");
+                    }
+                    return uriBuilder.build();
+                })
+                .retrieve()
+                .bodyToMono(AlphaVantageStockHistoryResponse.class)
+                .block();
+    } catch (Exception e) {
+        log.error("Error fetching stock history: {}", e.getMessage());
+        throw new ExternalApiException("Error while fetching stock history.");
     }
+}
 
     public AlphaVantageNewsResponse getNewsBySymbol(String symbols, int size){
         try {
