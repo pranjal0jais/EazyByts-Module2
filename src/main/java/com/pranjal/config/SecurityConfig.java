@@ -93,7 +93,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+        configuration.setAllowedOrigins(Collections.singletonList("https://stock-trading-simulator-production.up.railway.app/"));
         configuration.setAllowedMethods(Arrays.asList(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
         ));
