@@ -1,4 +1,4 @@
-package com.pranjal.dtos;
+package com.pranjal.dtos.PortfolioDTOs;
 
 
 import lombok.Builder;

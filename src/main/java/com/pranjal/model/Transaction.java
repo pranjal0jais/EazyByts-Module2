@@ -1,6 +1,6 @@
 package com.pranjal.model;
 
-import com.pranjal.dtos.TransactionType;
+import com.pranjal.dtos.TradingDTOs.TransactionType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

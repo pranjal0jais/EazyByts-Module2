@@ -46,7 +46,8 @@ public class AuthController {
                     )
             );
         } catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            log.error("Error while authenticating: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

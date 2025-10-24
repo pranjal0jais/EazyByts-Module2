@@ -32,6 +32,7 @@ public class StockClient {
                     .bodyToMono(AlphaVantageResponse.class)
                     .block();
         } catch (ExternalApiException e) {
+            log.error("Error fetching stock price: {}", e.getMessage());
             throw new ExternalApiException("Error while fetching stock price.");
         }
     }
@@ -47,6 +48,7 @@ public class StockClient {
                     .bodyToMono(AlphaVantageStockOverviewResponse.class)
                     .block();
         }catch (ExternalApiException e){
+            log.error("Error fetching stock overview: {}", e.getMessage());
             throw new ExternalApiException("Error while fetching stock overview.");
         }
     }
@@ -99,6 +101,7 @@ public AlphaVantageStockHistoryResponse getStockHistory(String symbol, String fu
                     .bodyToMono(AlphaVantageNewsResponse.class)
                     .block();
         }catch (ExternalApiException e){
+            log.error("Error fetching news: {}", e.getMessage());
             throw new ExternalApiException("Error while fetching news.");
         }
     }

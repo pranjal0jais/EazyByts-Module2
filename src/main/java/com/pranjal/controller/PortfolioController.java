@@ -1,6 +1,6 @@
 package com.pranjal.controller;
 
-import com.pranjal.dtos.PortfolioResponse;
+import com.pranjal.dtos.PortfolioDTOs.PortfolioResponse;
 import com.pranjal.service.PortfolioService;
 import com.pranjal.service.UserService;
 import lombok.RequiredArgsConstructor;

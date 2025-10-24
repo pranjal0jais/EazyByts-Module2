@@ -1,6 +1,5 @@
 package com.pranjal.dtos.TradingDTOs;
 
-import com.pranjal.dtos.TransactionType;
 import lombok.Builder;
 
 @Builder

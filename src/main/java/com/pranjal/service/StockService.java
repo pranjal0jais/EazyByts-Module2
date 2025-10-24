@@ -50,7 +50,9 @@ public class StockService {
                     }).toList();
             return dailyStockHistories.reversed();
         } catch (Exception e){
-            throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
+            log.error("Error fetching stock history: {}", e.getMessage());
+            throw new StockSymbolNotFoundException("Error fetching stock history: " + symbol +
+                    " & function: " + function);
         }
     }
 
@@ -69,7 +71,8 @@ public class StockService {
                     response.sector()
             );
         } catch (Exception e){
-            throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
+            log.error("Error fetching stock overview: {}", e.getMessage());
+            throw new StockSymbolNotFoundException("Error fetching stock overview for symbol: " + symbol);
         }
     }
 
@@ -83,7 +86,8 @@ public class StockService {
                     .price(Double.parseDouble(clientResponse.globalQuote().price()))
                     .build();
         }catch (Exception e){
-            throw new StockSymbolNotFoundException("Stock symbol not found: " + symbol);
+            log.error("Error fetching stock price: {}", e.getMessage());
+            throw new StockSymbolNotFoundException("Error fetching stock price for symbol: " + symbol);
         }
     }
 
@@ -111,7 +115,8 @@ public class StockService {
                     ))
                     .toList();
         }catch (Exception e){
-            throw new StockSymbolNotFoundException("Stock symbol not found: " + tickers);
+            log.error("Error fetching news: {}", e.getMessage());
+            throw new StockSymbolNotFoundException("Error fetching news for tickers: " + tickers);
         }
     }
 }

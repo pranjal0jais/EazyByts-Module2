@@ -1,10 +1,10 @@
 package com.pranjal.service;
 
-import com.pranjal.dtos.*;
 import com.pranjal.dtos.TradingDTOs.StockPurchaseResponse;
 import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
 import com.pranjal.dtos.TradingDTOs.StockSellResponse;
 import com.pranjal.dtos.TradingDTOs.TradeRequest;
+import com.pranjal.dtos.TradingDTOs.TransactionType;
 import com.pranjal.exception.*;
 import com.pranjal.model.Holding;
 import com.pranjal.model.Transaction;
@@ -102,8 +102,10 @@ public class TradingService {
                     .build();
         } catch (StockSymbolNotFoundException | UserNotFoundException |
                  InsufficientBalanceException | StockDoesNotExistException e){
+            log.error("Error while buying stock: {}", e.getMessage());
             throw e;
         } catch (Exception e){
+            log.error("Transaction Failed while purchasing: {}", e.getMessage());
             throw new TransactionFailedException("Transaction failed due to some reason");
         }
     }
@@ -173,8 +175,10 @@ public class TradingService {
         }catch (StockSymbolNotFoundException | UserNotFoundException |
                 InsufficientBalanceException | StockDoesNotExistException |
                 InsufficientHoldingException e){
+            log.error("Error while selling stock: {}", e.getMessage());
             throw e;
         } catch (Exception e){
+            log.error("Transaction Failed while selling: {}", e.getMessage());
             throw new TransactionFailedException("Transaction failed due to some reason");
         }
     }

@@ -1,6 +1,6 @@
 package com.pranjal.service;
 
-import com.pranjal.dtos.PortfolioResponse;
+import com.pranjal.dtos.PortfolioDTOs.PortfolioResponse;
 import com.pranjal.dtos.StocksDTOs.StockQuoteResponse;
 import com.pranjal.exception.UserNotFoundException;
 import com.pranjal.model.Holding;
@@ -8,7 +8,6 @@ import com.pranjal.repository.HoldingRepository;
 import com.pranjal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

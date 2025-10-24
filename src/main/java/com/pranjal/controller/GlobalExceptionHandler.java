@@ -1,6 +1,6 @@
 package com.pranjal.controller;
 
-import com.pranjal.dtos.ErrorResponse;
+import com.pranjal.dtos.ErrorDTO.ErrorResponse;
 import com.pranjal.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
