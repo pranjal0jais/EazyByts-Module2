@@ -92,7 +92,7 @@ public AlphaVantageStockHistoryResponse getStockHistory(String symbol, String fu
             }
             return webClient.get().uri(uriBuilder -> uriBuilder
                             .queryParam("function", "NEWS_SENTIMENT")
-                            .queryParam("tickers", "AAPL")
+                            .queryParam("tickers", symbols)
                             .queryParam("sort", "LATEST")
                             .queryParam("limit", size)
                             .queryParam("apikey", API_KEY)
